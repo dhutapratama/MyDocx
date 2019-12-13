@@ -1,0 +1,31 @@
+{
+  "name"       : "dhutapratama/mydocx",
+  "description": "MsOffice .docx templating, find and replace, merge, add an image for PHP",
+  "keywords"   : ["docx", "docx template", "docx merge", "image to docx", "php"],
+  "homepage"   : "https://github.com/dhutapratama/mydocx",
+  "license"    : "MIT",
+  "authors"    : [
+    {
+      "name"    : "Dhuta Pratama",
+      "email"   : "dhutapratama@gmail.com",
+      "homepage": "https://dhutapratama.com/"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/dhutapratama/mydocx",
+    "issues": "https://github.com/dhutapratama/mydocx/issues"
+  },
+  "require"    :{
+    "php":">=5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dhutapratama\\MyDocx\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+
+    }
+  }
+}
