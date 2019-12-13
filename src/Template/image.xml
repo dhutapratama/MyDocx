@@ -1,0 +1,40 @@
+<w:r>
+  <w:rPr>
+    <w:noProof/>
+  </w:rPr>
+  <w:drawing>
+    <wp:inline distT="114300" distB="114300" distL="114300" distR="114300">
+      <wp:extent cx="969264" cy="969264"/>
+      <wp:effectExtent l="0" t="0" r="2540" b="2540"/>
+      <wp:docPr id="3" name="qrcode"/>
+      <wp:cNvGraphicFramePr/>
+      <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+        <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">
+          <pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">
+            <pic:nvPicPr>
+              <pic:cNvPr id="0" name="qrcode"/>
+              <pic:cNvPicPr preferRelativeResize="0"/>
+            </pic:nvPicPr>
+            <pic:blipFill>
+              <a:blip r:embed="{rId}"/>
+              <a:srcRect/>
+              <a:stretch>
+                <a:fillRect/>
+              </a:stretch>
+            </pic:blipFill>
+            <pic:spPr>
+              <a:xfrm>
+                <a:off x="0" y="0"/>
+                <a:ext cx="969264" cy="969264"/>
+              </a:xfrm>
+              <a:prstGeom prst="rect">
+                <a:avLst/>
+              </a:prstGeom>
+              <a:ln/>
+            </pic:spPr>
+          </pic:pic>
+        </a:graphicData>
+      </a:graphic>
+    </wp:inline>
+  </w:drawing>
+</w:r>

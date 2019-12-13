@@ -1,69 +1,50 @@
 <?php
+namespace Dhutapratama\MyDocx;
 
-namespace Jupitern\Docx;
+use Dhutapratama\MyDocx\Lib\Engine;
 
-use Jupitern\Docx\Lib as DocxLib;
+class Docx {
+	private $docxPath;
+	private $replaceText 	= [];
+	private $replaceImage = [];
+	private $mergeFile = [];
 
-class Docx
-{
+	public function __construct($docxPath) {
+		$this->docxPath = $docxPath;
 
-	private $templateFilePath;
-	private $data = [];
-
-	/**
-	 * @return static
-	 */
-	public static function instance()
-	{
-		return new static();
+		if (!file_exists($this->templateFilePath)) {
+			throw new \Exception("template file {$this->docxPath} not found");
+		}
 	}
 
-
-	/**
-	 * @param $templateFilePath
-	 * @return $this
-	 */
-	public function setTemplate($templateFilePath)
-	{
-		$this->templateFilePath = $templateFilePath;
-		return $this;
-	}
-
-	/**
-	 * @param $data
-	 * @return $this
-	 */
-	public function setData($data)
-	{
+	public function setText($data) {
 		$this->data = $data;
 		return $this;
 	}
 
+	public function save() {
+		$engine = new Engine($this->docxPath);
 
-	/**
-	 * @param null $outputFilePath
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function save($outputFilePath = null)
-	{
-		if (!file_exists($this->templateFilePath)) {
-			throw new \Exception("template file {$this->templateFilePath} not found");
-		}
-
-		if ($outputFilePath === null) {
-			$outputFilePath = $this->templateFilePath;
-		} elseif (!copy($this->templateFilePath, $outputFilePath)) {
-			throw new \Exception("error creating output file {$outputFilePath}");
-		}
-
-		$docx = new DocxLib\Docx($outputFilePath);
-		$docx->loadHeadersAndFooters();
+		// find and replace text
 		foreach ($this->data as $key => $value) {
-			$docx->findAndReplace($key, $value);
+			$engine->findAndReplaceText($key, $value);
 		}
 
-		$docx->flush();
+		// Find and replace image
+		foreach ($this->data as $key => $value) {
+			if (!file_exists($value)) {
+				throw new \Exception("image file {$value} not found");
+			}
+
+			$engine->findAndReplaceImage($key, $value);
+		}
+
+		// Merge Documents
+		foreach ($this->mergeFile as $value) {
+			$engine->addFile($this->value);
+		}
+
+		$engine->flush();
 		return true;
 	}
 
