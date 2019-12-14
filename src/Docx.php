@@ -10,15 +10,25 @@ class Docx {
 	private $mergeFile = [];
 
 	public function __construct($docxPath) {
-		$this->docxPath = $docxPath;
-
-		if (!file_exists($this->templateFilePath)) {
+		if (!file_exists($docxPath)) {
 			throw new \Exception("template file {$this->docxPath} not found");
 		}
+
+		$this->docxPath = $docxPath;
 	}
 
-	public function setText($data) {
-		$this->data = $data;
+	public function setText($replaceText) {
+		$this->replaceText = $replaceText;
+		return $this;
+	}
+
+	public function setImage($replaceImage) {
+		$this->replaceImage = $replaceImage;
+		return $this;
+	}
+
+	public function setMerge($mergeFile) {
+		$this->mergeFile = $mergeFile;
 		return $this;
 	}
 
@@ -26,12 +36,12 @@ class Docx {
 		$engine = new Engine($this->docxPath);
 
 		// find and replace text
-		foreach ($this->data as $key => $value) {
+		foreach ($this->replaceText as $key => $value) {
 			$engine->findAndReplaceText($key, $value);
 		}
 
 		// Find and replace image
-		foreach ($this->data as $key => $value) {
+		foreach ($this->replaceImage as $key => $value) {
 			if (!file_exists($value)) {
 				throw new \Exception("image file {$value} not found");
 			}
@@ -41,11 +51,19 @@ class Docx {
 
 		// Merge Documents
 		foreach ($this->mergeFile as $value) {
-			$engine->addFile($this->value);
+			$engine->addFile($value);
 		}
 
 		$engine->flush();
 		return true;
 	}
 
+	public function saveAs($docxPath) {
+		if (!copy($this->docxPath, $docxPath)) {
+      throw new \Exception("error creating output file {$docxPath}");
+    }
+
+    $this->docxPath = $docxPath;
+    $this->save();
+	}
 }

@@ -8,7 +8,7 @@ This library is downloaded from **[https://github.com/jupitern/docx](https://git
 
 - Find text and replace with text and image
 - Merge docx files on one file
-###### Note : Merge document here is include new file to existing file and show as one document or existing page is not modified
+###### Note : Merge document here is include new file into existing file and show as one document or existing page is not modified
 
 ## Requirements
 
@@ -34,38 +34,33 @@ You can of course also manually edit your composer.json file
 ```
 
 ## Getting started
-#### Replacing Text
+#### Declaration
 ```php
 use Dhutapratama\MyDocx\Docx;
 
-Docx::file('/mydir/template.docx')
-  ->setText(['text_to_find' => 'value to replace'])
+// Initialization
+$myDocx = new Docx('/mydir/template.docx');
+```
+#### Replacing Text
+```php
+$myDocx->setText(['text_to_find' => 'value to replace'])
   ->save();
 ```
 #### Replacing Image
 ```php 
-use Dhutapratama\MyDocx\Docx;
-
-Docx::file('/mydir/template.docx')
-  ->setImage(['text_to_find' => '/your/image.png'])
+$myDocx->setImage(['text_to_find' => '/your/image.png'])
   ->save();
 ```
 
 #### Merge Files
 ```php 
-use Dhutapratama\MyDocx\Docx;
-
-Docx::file('/mydir/template.docx')
-  ->add(['/your/file1.docx', '/your/file2.docx'])
+$myDocx->setMerge(['/your/file1.docx', '/your/file2.docx'])
   ->save();
 ```
 
 #### Replace and merge
 ```php
-use Dhutapratama\MyDocx\Docx;
-
-Docx::file('/mydir/template.docx')
-  ->setText(['text_to_find' => 'value to replace'])
+$myDocx->setText(['text_to_find' => 'value to replace'])
   ->setImage(['text_to_find' => '/your/image.png'])
   ->setMerge(['/your/file1.docx', '/your/file2.docx'])
   ->save();

@@ -1,6 +1,6 @@
 <?php
 namespace Dhutapratama\MyDocx\Lib;
-include("TbsZip.php");
+
 class Engine {
     // Path to current docx file
   private $docxPath;
@@ -27,6 +27,7 @@ class Engine {
   private $headerAndFootersArray = [];
 
   private $lastRelId = 0;
+  private $lastImageId = 0;
 
   public function __construct($docxPath){
     $this->docxPath = $docxPath;
@@ -70,7 +71,12 @@ class Engine {
 
   private function reqRelId() {
     $this->lastRelId++;
-    return $this->lastRelId();
+    return $this->lastRelId;
+  }
+
+  private function reqImageId() {
+    $this->lastImageId++;
+    return $this->lastImageId;
   }
 
   private function readContent($zipPath) {
@@ -89,31 +95,30 @@ class Engine {
     $file['name'] = "merge_" . $refID . ".docx";
     $file['path'] = "word/merge/" . $file['name'];
 
-    $file['content'] 	= file_get_contents($filePath);
+    $file['content']  = file_get_contents($filePath);
     $this->docxZip->FileAdd($file['path'], $file['content']);
 
-
-    $this->addReference($fileZipPath, $refID);
+    $this->addReference($file['name'], $refID);
     $this->addAltChunk($refID);
-    $this->addContentType($fileZipPath);
+    $this->addContentType($file['path']);
   }
 
-  private function addReference($fileZipPath, $refID){
-    $relXmlString = '<Relationship Target="' . $fileZipPath . '" Type="' . $this->ALT_CHUNK_TYPE . '" Id="' . $refID . '"/>';
+  private function addReference($fileName, $refID){
+    $relXmlString = '<Relationship Target="merge/' . $fileName . '" Type="' . $this->ALT_CHUNK_TYPE . '" Id="' . $refID . '"/>';
 
     $p = strpos($this->docxRels, '</Relationships>');
     $this->docxRels = substr_replace($this->docxRels, $relXmlString, $p, 0);
   }
 
-  private function addContentType($zipName) {
-    $xmlItem = '<Override ContentType="' . $this->ALT_CHUNK_CONTENT_TYPE . '" PartName="/' . $fileZipPath . '"/>';
+  private function addContentType($zipPath) {
+    $xmlItem = '<Override ContentType="' . $this->ALT_CHUNK_CONTENT_TYPE . '" PartName="/' . $zipPath . '"/>';
 
     $p = strpos($this->docxContentTypes, '</Types>');
     $this->docxContentTypes = substr_replace($this->docxContentTypes, $xmlItem, $p, 0);
   }
 
   private function addAltChunk($refID) {
-    $xmlItem = '<w:altChunk r:id="' . $refID . '"/>';
+    $xmlItem = '<w:p><w:r><w:br w:type="page" /></w:r></w:p><w:altChunk r:id="' . $refID . '"/>';
 
     $p = strpos($this->docxDocument, '</w:body>');
     $this->docxDocument = substr_replace($this->docxDocument, $xmlItem, $p, 0);
@@ -135,31 +140,31 @@ class Engine {
     $refID = "rId" . $this->reqRelId();
     $file = [
       'mime' => mime_content_type($filePath),
-      'ext' => pathinfo($path, PATHINFO_EXTENSION),
+      'ext' => pathinfo($filePath, PATHINFO_EXTENSION),
     ];
-    $file['name'] = "image_" . $refID . "." . $file['ext'];
+    $file['name'] = "image" . $this->reqImageId() . "." . $file['ext'];
     $file['path'] = 'word/media/' . $file['name'];
-    $file['content'] = file_get_contents($file['path']);
+    $file['content'] = file_get_contents($filePath);
 
     $this->docxZip->FileAdd($file['path'], $file['content']);
 
-    $this->addRefImg($file['name']);
-    $this->addContentTypeImg($file['mime']);
+    $this->addRefImg($file['name'], $refID);
+    $this->addContentTypeImg($file['ext'], $file['mime']);
 
     return $refID;
   }
 
-  private function addRefImg($fileName) {
+  private function addRefImg($fileName, $refID) {
     $relXmlString = '<Relationship Target="media/' . $fileName . '" ';
     $relXmlString .= 'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" ';
-    $relXmlString .= 'Id="rId201"/>';
+    $relXmlString .= 'Id="' . $refID . '"/>';
 
     $p = strpos($this->docxRels, '</Relationships>');
     $this->docxRels = substr_replace($this->docxRels, $relXmlString, $p, 0);
   }
 
-  private function addContentTypeImg($mime) {
-    $xmlItem = '<Default Extension="png" ContentType="' . $mime . '" />';
+  private function addContentTypeImg($ext, $mime) {
+    $xmlItem = '<Default Extension="' . $ext . '" ContentType="' . $mime . '" />';
 
     $p = strpos($this->docxContentTypes, '</Types>');
     $this->docxContentTypes = substr_replace($this->docxContentTypes, $xmlItem, $p, 0);
