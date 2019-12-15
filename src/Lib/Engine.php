@@ -127,7 +127,7 @@ class Engine {
     // Replace Text
   public function findAndReplaceText($key, $value) {
     // Search/Replace in document
-    $this->docxDocument = str_replace($key, $value, $this->docxDocument);
+    $this->docxDocument = str_replace($key, htmlspecialchars($value), $this->docxDocument);
 
     // Search/Replace in footers and headers
     foreach ($this->headerAndFootersArray as $path => $content) {
