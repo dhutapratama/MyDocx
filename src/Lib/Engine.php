@@ -172,7 +172,7 @@ class Engine {
 
   public function findAndReplaceImage($key, $value) {
     $refID = $this->addImage($value);
-    $template = file_get_contents(__DIR__ . "/../template/image.xml");
+    $template = file_get_contents(__DIR__ . "/../Template/image.xml");
     $replace = str_replace("{rId}", $refID, $template);
 
     // Search/Replace in document
