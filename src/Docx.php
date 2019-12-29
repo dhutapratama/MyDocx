@@ -5,6 +5,7 @@ use Dhutapratama\MyDocx\Lib\Engine;
 
 class Docx {
   private $docxPath;
+  private $replaceHeaderFooter = [];
   private $replaceText = [];
   private $replaceImage = [];
   private $mergeFile = [];
