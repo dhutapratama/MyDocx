@@ -41,6 +41,11 @@ use Dhutapratama\MyDocx\Docx;
 // Initialization
 $myDocx = new Docx('/mydir/template.docx');
 ```
+#### Replacing Header and/or Footer
+```php
+$myDocx->setHeaderFooter(['text_to_find' => 'value to replace'])
+  ->save();
+```
 #### Replacing Text
 ```php
 $myDocx->setText(['text_to_find' => 'value to replace'])
