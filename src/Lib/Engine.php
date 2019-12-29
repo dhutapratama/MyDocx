@@ -208,4 +208,22 @@ class Engine {
       rename($tempFile, $this->docxPath);
     }
   }
+
+  public function loadHeadersAndFooters() {
+    $relsXML = new \SimpleXMLElement($this->docxRels);
+    foreach ($relsXML as $rel) {
+      if ($rel["Type"] == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" ||
+        $rel["Type"] == "http://schemas.openxmlformats.org/officeDocument/2006/relationships/header"
+      ) {
+        $path = "word/" . $rel["Target"];
+        $this->headerAndFootersArray[$path] = $this->readContent($path);
+      }
+    }
+  }
+
+  public function findAndReplaceHeadersAndFooters($key, $value) {
+    foreach ($this->headerAndFootersArray as $path => $content) {
+      $this->headerAndFootersArray[$path] = str_replace($key, $value, $content);
+    }
+  }
 }
